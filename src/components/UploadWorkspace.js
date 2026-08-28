@@ -148,15 +148,81 @@ export default function UploadWorkspace({ onFilesProcessed }) {
     }
   };
 
+  // Process one or many files — combines all pages in order
+  const processFiles = async (files, type) => {
+    setError("");
+    setProcessing((prev) => ({ ...prev, [type]: true }));
+
+    try {
+      const allPages = [];
+      let firstName = files[0].name;
+      let totalSize = 0;
+
+      for (const file of files) {
+        totalSize += file.size;
+        const fileType = file.type;
+
+        if (fileType === "application/pdf") {
+          const pdfjsLib = await loadPdfJS();
+          const arrayBuffer = await file.arrayBuffer();
+          const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
+
+          for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+            const page = await pdf.getPage(pageNum);
+            const originalViewport = page.getViewport({ scale: 1.0 });
+            const maxDim = 1600;
+            let scale = 1.5;
+            if (originalViewport.width > maxDim || originalViewport.height > maxDim) {
+              scale = maxDim / Math.max(originalViewport.width, originalViewport.height);
+            }
+            const viewport = page.getViewport({ scale });
+            const canvas = document.createElement("canvas");
+            canvas.width = viewport.width;
+            canvas.height = viewport.height;
+            await page.render({ canvasContext: canvas.getContext("2d"), viewport }).promise;
+            allPages.push(parseDataUrl(canvas.toDataURL("image/jpeg", 0.82)));
+          }
+        } else if (fileType.startsWith("image/")) {
+          const rawDataUrl = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = reject;
+            reader.readAsDataURL(file);
+          });
+          const resizedDataUrl = await resizeImage(rawDataUrl);
+          allPages.push(parseDataUrl(resizedDataUrl));
+        } else {
+          throw new Error(`Unsupported file: "${file.name}". Please upload PDFs or images only.`);
+        }
+      }
+
+      const fileData = {
+        name: files.length === 1 ? firstName : `${files.length} files (${allPages.length} pages)`,
+        size: formatFileSize(totalSize),
+        pageCount: allPages.length,
+        pages: allPages,
+        fileType: files.every(f => f.type === "application/pdf") ? "pdf" : files.every(f => f.type.startsWith("image/")) ? "image" : "mixed",
+      };
+
+      if (type === "qp") setQpFile(fileData);
+      else setAsFile(fileData);
+    } catch (err) {
+      console.error(err);
+      setError(err.message || "Failed to process file.");
+    } finally {
+      setProcessing((prev) => ({ ...prev, [type]: false }));
+    }
+  };
+
   const handleFileChange = (e, type) => {
-    const file = e.target.files?.[0];
-    if (file) processFile(file, type);
+    const files = Array.from(e.target.files || []);
+    if (files.length > 0) processFiles(files, type);
   };
 
   const handleDrop = (e, type) => {
     e.preventDefault();
-    const file = e.dataTransfer.files?.[0];
-    if (file) processFile(file, type);
+    const files = Array.from(e.dataTransfer.files || []);
+    if (files.length > 0) processFiles(files, type);
   };
 
   const removeFile = (type) => {
@@ -241,6 +307,7 @@ export default function UploadWorkspace({ onFilesProcessed }) {
                     ref={qpInputRef}
                     onChange={(e) => handleFileChange(e, "qp")}
                     accept="application/pdf,image/*"
+                    multiple
                     className="hidden"
                   />
 
@@ -259,7 +326,9 @@ export default function UploadWorkspace({ onFilesProcessed }) {
                       </button>
                       <div className="w-[32px] h-[40px] bg-[#E5484D] rounded-[4px] relative flex flex-col items-center justify-end pb-[2px] shrink-0 shadow-sm overflow-hidden">
                         <div className="absolute top-0 right-0 w-[10px] h-[10px] bg-white/30 rounded-bl-[4px]" />
-                        <span className="text-white font-bold text-[8px] tracking-wider leading-none">PDF</span>
+                        <span className="text-white font-bold text-[8px] tracking-wider leading-none">
+                          {qpFile.fileType === "image" ? "IMG" : qpFile.fileType === "mixed" ? "MIX" : "PDF"}
+                        </span>
                       </div>
                       <div className="flex flex-col ml-3 flex-1 min-w-0 pr-2">
                         <span className="font-bold text-[14px] text-[#303030] truncate tracking-[-0.02em]">{qpFile.name}</span>
@@ -293,6 +362,7 @@ export default function UploadWorkspace({ onFilesProcessed }) {
                     ref={asInputRef}
                     onChange={(e) => handleFileChange(e, "as")}
                     accept="application/pdf,image/*"
+                    multiple
                     className="hidden"
                   />
 
@@ -311,7 +381,9 @@ export default function UploadWorkspace({ onFilesProcessed }) {
                       </button>
                       <div className="w-[32px] h-[40px] bg-[#E5484D] rounded-[4px] relative flex flex-col items-center justify-end pb-[2px] shrink-0 shadow-sm overflow-hidden">
                         <div className="absolute top-0 right-0 w-[10px] h-[10px] bg-white/30 rounded-bl-[4px]" />
-                        <span className="text-white font-bold text-[8px] tracking-wider leading-none">PDF</span>
+                        <span className="text-white font-bold text-[8px] tracking-wider leading-none">
+                          {asFile.fileType === "image" ? "IMG" : asFile.fileType === "mixed" ? "MIX" : "PDF"}
+                        </span>
                       </div>
                       <div className="flex flex-col ml-3 flex-1 min-w-0 pr-2">
                         <span className="font-bold text-[14px] text-[#303030] truncate tracking-[-0.02em]">{asFile.name}</span>
