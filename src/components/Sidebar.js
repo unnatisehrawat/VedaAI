@@ -1,15 +1,14 @@
 import React, { useState } from "react";
 import { 
-  Home, 
+  LayoutGrid, 
   Users, 
-  FileSpreadsheet, 
-  GraduationCap, 
-  BookOpen, 
+  FileText, 
+  Clipboard, 
+  PieChart, 
   Settings, 
   ChevronDown, 
   Sparkles,
-  ChevronsRight,
-  ChevronsLeft
+  PanelLeft
 } from "lucide-react";
 
 export default function Sidebar({ collapsed: initialCollapsed = false }) {
@@ -20,12 +19,16 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
     setIsCollapsed(initialCollapsed);
   }, [initialCollapsed]);
 
+  const CustomClassroomIcon = ({ className }) => (
+    <img src="/assets/my-classroom.svg" alt="My Classroom" className={className} />
+  );
+
   const menuItems = [
-    { name: "Home", icon: Home, active: false },
-    { name: "My Classroom", icon: Users, active: false },
-    { name: "Assignments", icon: FileSpreadsheet, active: false },
-    { name: "Exams", icon: GraduationCap, active: true },
-    { name: "My Library", icon: BookOpen, active: false },
+    { name: "Home", icon: LayoutGrid, active: false },
+    { name: "My Classroom", icon: CustomClassroomIcon, active: false },
+    { name: "Assignments", icon: FileText, active: false },
+    { name: "Exams", icon: Clipboard, active: true },
+    { name: "My Library", icon: PieChart, active: false },
   ];
 
   if (isCollapsed) {
@@ -33,9 +36,7 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
       <aside className="relative z-10 w-[72px] bg-white rounded-2xl border border-zinc-200 flex flex-col justify-between items-center py-6 h-full shrink-0 shadow-[0_32px_48px_rgba(0,0,0,0.15)] transition-all duration-300">
         <div className="flex flex-col items-center gap-6 w-full px-3">
           {/* Brand Logo Icon */}
-          <div className="bg-zinc-950 text-white rounded-xl flex items-center justify-center font-bold text-lg shadow-sm h-[40px] w-[40px] shrink-0">
-            V
-          </div>
+          <img src="/logo.svg" alt="VedaAI Logo" className="h-[40px] w-[40px] shrink-0 rounded-[10px] shadow-sm" />
 
           {/* AI Teacher's Toolkit Icon Button */}
           <div className="w-[42px] h-[42px] rounded-full bg-gradient-to-r from-[#FF7950] to-[#C0350A] p-[3px] shadow-sm flex items-center justify-center shrink-0 cursor-pointer hover:scale-105 transition-transform">
@@ -77,9 +78,9 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
           {/* School Icon */}
           <div 
             title="Delhi Public School, Bokaro Steel City"
-            className="h-[40px] w-[40px] rounded-xl bg-[#F0F0F0] flex items-center justify-center border border-zinc-200 text-zinc-600 font-bold shrink-0 cursor-pointer hover:bg-[#E5E5E5] transition-all"
+            className="w-[42px] h-[42px] flex items-center justify-center shrink-0 cursor-pointer hover:opacity-80 transition-all"
           >
-            🏫
+            <img src="/assets/school.svg" alt="School" className="w-full h-full object-contain" />
           </div>
 
           {/* Expand Toggle */}
@@ -88,7 +89,7 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
             title="Expand Sidebar"
             className="p-1.5 hover:bg-zinc-100 rounded-lg text-zinc-400 hover:text-zinc-700 transition-colors mt-1"
           >
-            <ChevronsRight className="h-4 w-4" />
+            <PanelLeft className="h-[18px] w-[18px]" strokeWidth={1.5} />
           </button>
         </div>
       </aside>
@@ -101,9 +102,7 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
         {/* Brand Logo */}
         <div className="flex items-center justify-between px-1 h-[40px]">
           <div className="flex items-center gap-2">
-            <div className="bg-zinc-950 text-white p-1.5 rounded-xl flex items-center justify-center font-bold text-lg leading-none shadow-sm h-[40px] w-[40px]">
-              V
-            </div>
+            <img src="/logo.svg" alt="VedaAI Logo" className="h-[40px] w-[40px] shrink-0 rounded-[10px] shadow-sm" />
             <span className="font-bold text-[28px] text-[#303030] leading-[20px] tracking-[-0.06em]">VedaAI</span>
           </div>
           <button 
@@ -111,7 +110,7 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
             title="Collapse Sidebar"
             className="text-zinc-400 hover:text-zinc-600 transition-colors p-1 hover:bg-zinc-50 rounded-lg"
           >
-            <ChevronsLeft className="h-4 w-4" />
+            <PanelLeft className="h-[20px] w-[20px]" strokeWidth={1.5} />
           </button>
         </div>
 
@@ -152,17 +151,16 @@ export default function Sidebar({ collapsed: initialCollapsed = false }) {
         </button>
 
         {/* School Selector Dropdown */}
-        <div className="flex items-center justify-between p-[12px] h-[84px] rounded-2xl bg-[#F0F0F0] hover:bg-[#E5E5E5] cursor-pointer transition-all">
-          <div className="flex items-center gap-2 min-w-0">
-            <div className="h-9 w-9 rounded-lg bg-zinc-100 flex items-center justify-center border border-zinc-200 text-zinc-600 font-bold shrink-0">
-              🏫
+        <div className="flex items-center p-[12px] h-[84px] rounded-2xl bg-[#F0F0F0] hover:bg-[#E5E5E5] cursor-pointer transition-all">
+          <div className="flex items-center gap-3 min-w-0">
+            <div className="w-[44px] h-[44px] flex items-center justify-center shrink-0">
+              <img src="/assets/school.svg" alt="School" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col min-w-0">
               <span className="font-bold text-[16px] leading-[1.4] tracking-[-0.04em] text-[#303030] truncate">Delhi Public School</span>
               <span className="text-[14px] font-normal leading-[1.4] tracking-[-0.04em] text-[#5E5E5E] truncate">Bokaro Steel City</span>
             </div>
           </div>
-          <ChevronDown className="h-4 w-4 text-zinc-400 shrink-0" />
         </div>
       </div>
     </aside>

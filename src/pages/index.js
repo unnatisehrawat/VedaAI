@@ -171,8 +171,9 @@ export default function Home() {
               </div>
 
               {/* Mobile text */}
-              <div className="flex md:hidden items-center gap-2">
-                <span className="text-[16px] font-bold text-[#1E1E1E] tracking-[-0.04em] ml-1">VedaAI</span>
+              <div className="flex md:hidden items-center gap-1.5 ml-1">
+                <img src="/logo.svg" alt="VedaAI Logo" className="h-[24px] w-[24px] rounded-[6px] shadow-sm" />
+                <span className="text-[16px] font-bold text-[#1E1E1E] tracking-[-0.04em]">VedaAI</span>
               </div>
             </button>
 

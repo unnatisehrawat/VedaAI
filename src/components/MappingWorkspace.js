@@ -390,7 +390,7 @@ export default function MappingWorkspace({ finalResult, answerSheetImages }) {
                   <div
                     key={idx}
                     ref={idx === 0 ? highlightRef : null}
-                    className={`absolute border-[2px] rounded-lg transition-all duration-300 flex items-start justify-center ${hl.color} ${hl.confidence === 'low' ? 'border-dashed opacity-80' : ''}`}
+                    className={`absolute border-[2px] rounded-lg transition-all duration-300 flex items-start justify-start ${hl.color} ${hl.confidence === 'low' ? 'border-dashed opacity-80' : ''}`}
                     style={{
                       top: `${Math.max(0, ymin - 1)}%`,
                       left: `${Math.max(0, xmin - 1.8)}%`,
@@ -399,7 +399,7 @@ export default function MappingWorkspace({ finalResult, answerSheetImages }) {
                     }}
                   >
                     {/* Badge */}
-                    <div className="absolute -top-[14px] bg-[#2B2B2B] text-white font-bold text-[11px] px-[10px] py-[3px] rounded-full shadow-md flex items-center justify-center select-none whitespace-nowrap z-10 border border-white/20">
+                    <div className="absolute -top-[14px] left-0 bg-[#22C55E] text-white font-bold text-[11px] px-[10px] py-[3px] rounded-full shadow-md flex items-center justify-center select-none whitespace-nowrap z-10 border border-green-400/30">
                       <span>{hl.label}</span>
                     </div>
 
