@@ -1,8 +1,32 @@
 @import "tailwindcss";
 
+/* ─── Design Tokens ──────────────────────────────────────────────── */
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  /* Brand colors */
+  --color-brand:        #FF5623;
+  --color-brand-light:  #FFF0EB;
+  --color-brand-hover:  #E84D1E;
+
+  /* Text scale */
+  --color-text-primary:   #303030;
+  --color-text-secondary: #5E5E5E;
+  --color-text-muted:     #8E8E93;
+  --color-text-faint:     #A9A9A9;
+  --color-text-dark:      #2B2B2B;
+  --color-text-black:     #1E1E1E;
+
+  /* Surface scale */
+  --color-surface:        #F5F5F7;
+  --color-surface-border: #E4E4E7;
+  --color-surface-card:   #EFEFF1;
+
+  /* Tracking */
+  --tracking-tight:    -0.02em;
+  --tracking-normal:   -0.04em;
+  --tracking-wide:     -0.06em;
 }
 
 @theme inline {
@@ -26,4 +50,187 @@
 body {
   background: var(--background);
   color: var(--foreground);
+}
+
+/* ─── Reusable Utility Classes ───────────────────────────────────── */
+@layer utilities {
+
+  /* ── Typography ── */
+  .text-heading-xl {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 1.2;
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .text-heading-lg {
+    font-size: 24px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 140%;
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .text-heading-md {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    line-height: 22px;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .text-label-lg {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--color-text-primary);
+    line-height: 140%;
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .text-label-md {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-text-primary);
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .text-body {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-primary);
+    line-height: 140%;
+    letter-spacing: var(--tracking-normal);
+  }
+
+  .text-body-secondary {
+    font-size: 14px;
+    font-weight: 400;
+    color: var(--color-text-secondary);
+    line-height: 22px;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .text-caption {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    letter-spacing: -0.01em;
+  }
+
+  .text-brand {
+    color: var(--color-brand);
+  }
+
+  /* ── Buttons ── */
+  .btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background-color: var(--color-brand);
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+    letter-spacing: var(--tracking-normal);
+    border-radius: 9999px;
+    padding: 12px 24px;
+    transition: all 0.15s ease;
+    border: none;
+    cursor: pointer;
+  }
+  .btn-primary:hover {
+    background-color: var(--color-brand-hover);
+  }
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .btn-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border-radius: 9999px;
+    background-color: #F6F6F6;
+    color: var(--color-text-secondary);
+    transition: background-color 0.15s ease;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-icon:hover {
+    background-color: #EAEAEA;
+  }
+
+  /* ── Cards & Surfaces ── */
+  .card {
+    background-color: #ffffff;
+    border: 1px solid var(--color-surface-border);
+    border-radius: 16px;
+  }
+
+  .surface {
+    background-color: var(--color-surface);
+    border-radius: 12px;
+  }
+
+  .upload-container {
+    background-color: color-mix(in srgb, var(--color-surface-card) 70%, transparent);
+    border: 1px solid var(--color-surface-border);
+    padding: 10.5px;
+    border-radius: 28px;
+  }
+
+  /* ── Icon containers ── */
+  .icon-box {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background-color: var(--color-surface);
+    border-radius: 12px;
+    transition: background-color 0.15s ease;
+    flex-shrink: 0;
+  }
+  .icon-box:hover, .group:hover .icon-box {
+    background-color: var(--color-brand-light);
+  }
+
+  /* ── Sidebar nav item ── */
+  .nav-item {
+    display: flex;
+    align-items: center;
+    padding-left: 24px;
+    padding-right: 20px;
+    padding-top: 12px;
+    padding-bottom: 12px;
+    gap: 8px;
+    height: 44px;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 9999px;
+    transition: all 0.15s ease;
+    cursor: pointer;
+  }
+
+  /* ── Highlight badge ── */
+  .highlight-badge {
+    position: absolute;
+    top: -14px;
+    left: 0;
+    background-color: #22C55E;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 9999px;
+    white-space: nowrap;
+    z-index: 10;
+    user-select: none;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+  }
 }
